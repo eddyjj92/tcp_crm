@@ -261,12 +261,12 @@ watch(filters, async () => {
 })
 
 const register = async () => {
-  const registered = await productStore.postItem(item.value)
+  const registered = await productStore.postItem(product.value)
   if (registered){
     dialog.value = false;
     loading.value = true;
-    item.value = {};
-    await productStore.getItems(null, false)
+    product.value = {};
+    await productStore.getProducts(null, false)
       .finally(() => loading.value = false);
   }
 }
