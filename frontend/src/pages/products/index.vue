@@ -184,10 +184,7 @@ let filters = reactive({
   name: "",
   description: "",
 });
-let product = ref({
-  active: true,
-  promotion: false,
-})
+let product = ref({})
 let dialog = ref(false);
 let mode = ref("list")
 let pagination = ref({
@@ -256,12 +253,12 @@ const exportTable = () => {
 watch(filters, async () => {
   loading.value = true;
   const url = `/api/items?name=${filters.name}&description=${filters.description}`
-  await productStore.getItems(url, false)
+  await productStore.getProducts(url, false)
     .finally(() => loading.value = false);
 })
 
 const register = async () => {
-  const registered = await productStore.postItem(product.value)
+  const registered = await productStore.postProduct(product.value)
   if (registered){
     dialog.value = false;
     loading.value = true;
@@ -273,22 +270,18 @@ const register = async () => {
 
 const edit = (id) => {
   const edit = products.value.find(u => u.id === id);
-  item.value.product = edit.product;
-  item.value.description = edit.description;
-  item.value.profit_percent = edit.profit_percent;
-  item.value.purchase_price = edit.purchase_price;
-  item.value.sale_price = edit.sale_price;
+  product.value.name = edit.name;
   selected.value = [id];
   dialog.value = true;
 }
 
 const update = async () => {
-  const updated = await productStore.putItem(selected.value[0], item.value)
+  const updated = await productStore.putProduct(selected.value[0], product.value)
   if (updated){
     dialog.value = false;
     loading.value = true;
     selected.value = [];
-    await productStore.getItems(null, false)
+    await productStore.getProducts(null, false)
       .finally(() => loading.value = false);
   }
 }
@@ -303,11 +296,11 @@ const deleteDialogClose = () => {
 }
 
 const remove = async () => {
-  const deleted = await productStore.deleteItem(deleteDialog.value)
+  const deleted = await productStore.deleteProduct(deleteDialog.value)
   if (deleted){
     deleteDialog.value = null;
     loading.value = true;
-    await productStore.getItems(null, false)
+    await productStore.getProducts(null, false)
       .finally(() => loading.value = false);
   }
 }
