@@ -1,1 +1,22 @@
-// app global css in SCSS form
+.custom-notify {
+  max-width: 300px; /* Ajusta este valor según lo que necesites */
+  word-wrap: break-word; /* Asegura que el texto se ajuste */
+  position: relative;
+}
+
+.custom-notify .q-notify__progress-bar {
+  background-color: #ff4d4f; /* Cambia el color de la barra de progreso */
+  height: 5px; /* Ajusta el grosor de la barra */
+}
+
+.custom-notify .q-notify__action {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  cursor: pointer;
+  font-size: 16px; /* Ajusta el tamaño del icono */
+}
+
+.custom-notify .q-notify__message {
+  padding-right: 30px; /* Para dar espacio al icono de cerrar */
+}

@@ -56,12 +56,11 @@ func main() {
 	db.Exec("DELETE FROM products")
 	// Create
 	db.Create(&models.Product{
-		Product:          "Zapatos",
-		Description:      "Zapatos negros",
-		PurchasePrice:    0,
-		SalePrice:        0,
-		ProfitPercentage: 15,
-		ImagePath:        "users/user.png",
+		Name:          "Zapatos",
+		Description:   "Zapatos negros",
+		PurchasePrice: "0",
+		SalePrice:     "0",
+		ImagePath:     "users/user.png",
 	})
 
 	controllers.DB = db

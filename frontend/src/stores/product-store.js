@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import {ref} from "vue";
 import {api} from "boot/axios";
 import {Loading, Notify} from "quasar";
-import {List} from "app/wailsjs/go/controllers/ProductController.js";
+import {List, Store} from "app/wailsjs/go/controllers/ProductController.js";
 
 export const useProductStore = defineStore('product', () => {
   let products = ref([]);
@@ -18,163 +18,49 @@ export const useProductStore = defineStore('product', () => {
       localStorage.setItem('products', JSON.stringify(products.value))
       return true;
     }).catch(error => {
+      Notify.create({
+        message: error,
+        type: "negative"
+      });
       return false
     }).finally(() => hideLoading ? Loading.hide() : null)
   }
 
-  const postProduct = async (token, product) => {
-    const formData = new FormData();
-    for (const key in product) {
-      if (product.hasOwnProperty(key)) {
-        formData.append(key, product[key]);
-      }
-    }
+  const postProduct = async (product) => {
     await Loading.show();
-    return await api.post(`/api/items`, formData,{
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "multipart/form-data"
-      }
-    })
-      .then(res => {
-        Notify.create({
-          type: 'positive',
-          message: res.data.message,
-          position: 'top-right',
-          progress: true,
-          actions: [{ icon: 'close', color: 'white' }]
-        })
-        return true
-      })
-      .catch(error => {
-        let message;
-        if (error.response?.data.validations){
-          for(let msg of Object.values(error.response.data.validations)){
-            Notify.create({
-              type: 'negative',
-              message: msg,
-              position: 'top-right',
-              progress: true,
-              actions: [{ icon: 'close', color: 'white' }]
-            })
+    return await Store(product).then(response => {
+      products.value = [...products.value, response];
+      localStorage.setItem('products', JSON.stringify(products.value))
+      return true;
+    }).catch(error => {
+      const close = Notify.create({
+        message: error,
+        type: "negative",
+        position: "top-right",
+        html: true,
+        badgeClass: "custom-notify",
+        timeout: 5000, // Tiempo en milisegundos, 5000ms = 5 segundos
+        actions: [
+          {
+            icon: "close", // Icono de cerrar
+            color: "white", // Color del icono
+            handler: () => {
+              close()
+            }
           }
-          return false;
-        }else if (error.response?.data.message){
-          message = error.response?.data.message
-        }else {
-          message = error.message
-        }
-        Notify.create({
-          type: 'negative',
-          message: message,
-          position: 'top-right',
-          progress: true,
-          actions: [{ icon: 'close', color: 'white' }]
-        })
-        return false;
-      })
-      .finally(() => Loading.hide())
+        ],
+        progress: true, // Barra de progreso visible
+      });
+      return false
+    }).finally(() => Loading.hide())
   }
 
-  const putProduct = async (token, id, item) => {
-    const formData = new FormData();
-    for (const key in item) {
-      if (item.hasOwnProperty(key)) {
-        if (key === 'colors'){
-          item[key].forEach(color => {
-            formData.append('colors[]', color);
-          })
-        }else if (key === 'sizes'){
-          item[key].forEach(size => {
-            formData.append('sizes[]', size);
-          })
-        }else{
-          formData.append(key, item[key]);
-        }
-      }
-    }
-    formData.append('_method', 'PUT');
-    await Loading.show();
-    return await api.post(`/api/items/${id}`, formData,{
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'multipart/form-data',
-      }
-    })
-      .then(res => {
-        Notify.create({
-          type: 'positive',
-          message: res.data.message,
-          position: 'top-right',
-          progress: true,
-          actions: [{ icon: 'close', color: 'white' }]
-        })
-        return true
-      })
-      .catch(error => {
-        let message;
-        if (error.response?.data.validations){
-          for(let msg of Object.values(error.response.data.validations)){
-            Notify.create({
-              type: 'negative',
-              message: msg,
-              position: 'top-right',
-              progress: true,
-              actions: [{ icon: 'close', color: 'white' }]
-            })
-          }
-          return false;
-        }else if (error.response?.data.message){
-          message = error.response?.data.message
-        }else {
-          message = error.message
-        }
-        Notify.create({
-          type: 'negative',
-          message: message,
-          position: 'top-right',
-          progress: true,
-          actions: [{ icon: 'close', color: 'white' }]
-        })
-        return false;
-      })
-      .finally(() => Loading.hide())
+  const putProduct = async (id, product) => {
+
   }
 
-  const deleteProduct = async (token, id) => {
-    await Loading.show();
-    return await api.delete(`/api/items/${id}`,{
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
-      .then(res => {
-        Notify.create({
-          type: 'positive',
-          message: res.data.message,
-          position: 'top-right',
-          progress: true,
-          actions: [{ icon: 'close', color: 'white' }]
-        })
-        return true
-      })
-      .catch(error => {
-        let message;
-        if (error.response?.data.message){
-          message = error.response?.data.message
-        }else {
-          message = error.message
-        }
-        Notify.create({
-          type: 'negative',
-          message: message,
-          position: 'top-right',
-          progress: true,
-          actions: [{ icon: 'close', color: 'white' }]
-        })
-        return false;
-      })
-      .finally(() => Loading.hide())
+  const deleteProduct = async (id) => {
+
   }
 
 

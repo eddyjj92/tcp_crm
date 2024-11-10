@@ -3,3 +3,7 @@
 import {models} from '../models';
 
 export function List():Promise<Array<models.Product>>;
+
+export function Store(arg1:models.Product):Promise<models.Product>;
+
+export function Update(arg1:models.Product,arg2:number):Promise<models.Product>;

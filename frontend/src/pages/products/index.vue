@@ -87,11 +87,10 @@
             >
               <q-checkbox v-model="selected" :val="col.value" class="float-left" v-if="col.label === 'ID'"/>
               <q-img class="rounded-borders" width="40px" :ratio="1" v-if="col.field === 'image_path'" :src="`http://localhost:3000/${props.cols[1].value}`" />
-              <q-checkbox @click="setActive(props.cols[0].value)" v-if="col.field === 'active'" :model-value="col.value" />
               <span v-if="col.field !== 'id' && col.field !== 'image_path' && col.field !== 'active'" class="float-left">{{ col.value }}</span>
             </q-td>
             <q-td auto-width align="center">
-              <q-btn class="q-ml-sm bg-yellow-6 text-white" style="width: 35px">
+              <q-btn @click="edit(props.cols[0].value)" class="q-ml-sm bg-yellow-6 text-white" style="width: 35px">
                 <q-icon size="xs" name="edit" />
                 <q-tooltip anchor="top middle" self="bottom middle" :offset="[10, 10]">
                   Editar Producto.
@@ -111,7 +110,7 @@
         </template>
       </q-table>
     </q-card>
-    <q-dialog v-model="dialog" persistent @before-hide="selected = []; item = {promotion: false, active: true}">
+    <q-dialog v-model="dialog" persistent @before-hide="selected = []; product = {}">
       <q-card style="width: 700px; max-width: 85vw;">
         <q-card-section>
           <div class="text-h6">
@@ -132,13 +131,43 @@
               </q-item>
               <q-item>
                 <q-item-section>
+                  <q-item-label class="q-pb-xs">Descripción</q-item-label>
+                  <q-input dense outlined v-model="product.description" label="Descripción"/>
+                </q-item-section>
+              </q-item>
+              <q-item>
+                <q-item-section>
+                  <q-item-label class="q-pb-xs">Precio de Compras</q-item-label>
+                  <q-input dense outlined v-model="product.purchase_price" label="Precio de Compras"/>
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label class="q-pb-xs">Precio de Venta</q-item-label>
+                  <q-input dense outlined v-model="product.sale_price" label="Precio de Venta"/>
+                </q-item-section>
+              </q-item>
+              <q-item>
+                <q-item-section>
                   <q-item-label class="q-pb-xs">Imagen</q-item-label>
-                  <q-file dense outlined v-model="product.image" label="Imagen">
+                  <q-file
+                    dense
+                    outlined
+                    v-model="uploadImage"
+                    @update:model-value="handleFileAdded"
+                    label="Imagen"
+                  >
                     <template v-slot:prepend>
                       <q-icon name="cloud_upload" @click.stop.prevent />
                     </template>
                     <template v-slot:append>
-                      <q-btn :disable="product.image === null || product.image === undefined" outlined unelevated icon="close" @click.stop.prevent="product.image = null" class="cursor-pointer" style="margin-right: -10px; width: 40px" />
+                      <q-btn
+                        :disable="uploadImage === null || uploadImage === undefined"
+                        outlined
+                        unelevated
+                        icon="close"
+                        @click.stop.prevent="uploadImage = null"
+                        class="cursor-pointer"
+                        style="margin-right: -10px; width: 40px"
+                      />
                     </template>
                   </q-file>
                 </q-item-section>
@@ -172,7 +201,7 @@ let loading = ref(false);
 const columns = [
   { name: "id", align: "left", label: "ID",  field: "id", sortable: true },
   { name: "image_path", align: "left", label: "Imagen",  field: "image_path", sortable: true },
-  { name: "product", align: "left", label: "Producto",  field: "product", sortable: true },
+  { name: "name", align: "left", label: "Producto",  field: "name", sortable: true },
   { name: "purchase_price", align: "left", label: "Precio de Compra",  field: "purchase_price", sortable: true, format: (val, row) => `$${val}`, },
   { name: "sale_price", align: "left", label: "Precio de Venta",  field: "sale_price", sortable: true, format: (val, row) => `$${val}`, },
 ];
@@ -185,6 +214,7 @@ let filters = reactive({
   description: "",
 });
 let product = ref({})
+let uploadImage = ref(null);
 let dialog = ref(false);
 let mode = ref("list")
 let pagination = ref({
@@ -261,16 +291,16 @@ const register = async () => {
   const registered = await productStore.postProduct(product.value)
   if (registered){
     dialog.value = false;
-    loading.value = true;
     product.value = {};
-    await productStore.getProducts(null, false)
-      .finally(() => loading.value = false);
   }
 }
 
 const edit = (id) => {
   const edit = products.value.find(u => u.id === id);
   product.value.name = edit.name;
+  product.value.description = edit.description;
+  product.value.purchase_price = edit.purchase_price;
+  product.value.sale_price = edit.sale_price;
   selected.value = [id];
   dialog.value = true;
 }
@@ -303,6 +333,22 @@ const remove = async () => {
     await productStore.getProducts(null, false)
       .finally(() => loading.value = false);
   }
+}
+
+const handleFileAdded = async (file) => {
+  if (file) {
+    product.value.image_path = await toBase64(file);
+    alert(product.value.image_path)
+  }
+};
+
+function toBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file); // Convertir el archivo a base64
+  });
 }
 
 </script>

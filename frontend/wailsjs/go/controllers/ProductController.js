@@ -5,3 +5,11 @@
 export function List() {
   return window['go']['controllers']['ProductController']['List']();
 }
+
+export function Store(arg1) {
+  return window['go']['controllers']['ProductController']['Store'](arg1);
+}
+
+export function Update(arg1, arg2) {
+  return window['go']['controllers']['ProductController']['Update'](arg1, arg2);
+}

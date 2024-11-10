@@ -2,11 +2,10 @@ export namespace models {
 	
 	export class Product {
 	    id: number;
-	    product: string;
+	    name: string;
 	    description: string;
-	    purchase_price: number;
-	    sale_price: number;
-	    profit_percentage: number;
+	    purchase_price: string;
+	    sale_price: string;
 	    image_path: string;
 	    // Go type: time
 	    created_at: any;
@@ -20,11 +19,10 @@ export namespace models {
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.id = source["id"];
-	        this.product = source["product"];
+	        this.name = source["name"];
 	        this.description = source["description"];
 	        this.purchase_price = source["purchase_price"];
 	        this.sale_price = source["sale_price"];
-	        this.profit_percentage = source["profit_percentage"];
 	        this.image_path = source["image_path"];
 	        this.created_at = this.convertValues(source["created_at"], null);
 	        this.updated_at = this.convertValues(source["updated_at"], null);
