@@ -8,11 +8,11 @@ import (
 // Estructura del Producto
 type Product struct {
 	ID            uint      `gorm:"primaryKey" json:"id"`
-	Name          string    `json:"name" validate:"required,min=3,max=100" alias:"Nombre"`
-	Description   string    `json:"description" validate:"required,max=255" alias:"Descripción"`
-	PurchasePrice string    `json:"purchase_price" validate:"required,gt=0,numeric" alias:"Precio de compra"`
-	SalePrice     string    `json:"sale_price" validate:"required,gt=0,numeric" alias:"Precio de venta"`
-	ImagePath     string    `json:"image_path" validate:"omitempty" alias:"Ruta de la imagen"`
+	Name          string    `json:"name" validate:"required,min=3,max=100"`
+	Description   string    `json:"description" validate:"required,max=255"`
+	PurchasePrice string    `json:"purchase_price" validate:"required,gt=0,numeric"`
+	SalePrice     string    `json:"sale_price" validate:"required,gt=0,numeric"`
+	ImagePath     string    `json:"image_path" validate:"omitempty"`
 	CreatedAt     time.Time `json:"created_at"`
 	UpdatedAt     time.Time `json:"updated_at"`
 }

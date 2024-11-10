@@ -46,7 +46,7 @@ func UploadImage(base64Image string) (string, error) {
 
 	// Crear el nombre de archivo y la ruta donde guardar la imagen
 	fileName := fmt.Sprintf("%d.%s", time.Now().Unix(), format) // Usar el formato detectado (png, jpeg, etc.)
-	filePath := filepath.Join("storage", "users", fileName)
+	filePath := filepath.Join("storage", "products", fileName)
 
 	// Guardar el archivo en el sistema de archivos
 	err = ioutil.WriteFile(filePath, decodedImage, 0644)

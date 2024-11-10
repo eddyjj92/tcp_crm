@@ -52,19 +52,27 @@ func main() {
 	}
 
 	// Migrate the schema
-	db.AutoMigrate(&models.Product{})
+	db.AutoMigrate(&models.Product{}, &models.Supplier{})
 	db.Exec("DELETE FROM products")
+	db.Exec("DELETE FROM suppliers")
 	// Create
 	db.Create(&models.Product{
 		Name:          "Zapatos",
 		Description:   "Zapatos negros",
 		PurchasePrice: "0",
 		SalePrice:     "0",
-		ImagePath:     "users/user.png",
+		ImagePath:     "products/product.png",
+	})
+	db.Create(&models.Supplier{
+		Name:    "Periquito Perez",
+		Address: "Cienfuegos",
+		Phone:   "5030258",
+		Email:   "periquito@gmail.com",
 	})
 
 	controllers.DB = db
 	productController := controllers.NewProductController()
+	supplierController := controllers.NewSupplierController()
 
 	// Create an instance of the app structure
 	app := NewApp()
@@ -98,6 +106,8 @@ func main() {
 			app,
 			&models.Product{},
 			productController,
+			&models.Supplier{},
+			supplierController,
 		},
 		// Windows platform specific options
 		Windows: &windows.Options{
