@@ -17,7 +17,7 @@ type Product struct {
 	UpdatedAt     time.Time `json:"updated_at"`
 }
 
-// Implementar el método Validate para el modelo Product
+// Implementar el método Validate
 func (p *Product) Validate() error {
 	aliases := map[string]string{
 		"Name":             "Nombre",

@@ -1,3 +1,79 @@
+/* app global css */
+
+/* Sobrescribir el tamaño de la fuente en la tabla */
+.q-table {
+  font-size: 12px !important;
+}
+
+/* Sobrescribir el padding en las celdas de la tabla */
+.q-table .q-td,
+.q-table .q-th {
+  font-size: 10px !important;
+}
+
+/* Sobrescribir la altura de las filas */
+.q-table .q-tr {
+  height: 10px !important;
+}
+
+/* Asegurarse de que el envoltorio de q-input dentro de q-table sea más pequeño */
+.q-table .q-input,
+.q-table .q-field {
+  height: 28px; /* Permitir que la altura se ajuste */
+  padding: 0;   /* Quitar padding extra */
+  font-size: 11px; /* Tamaño de la fuente reducido */
+}
+
+/* Ajustar el control del input para que tenga una altura mínima adecuada */
+.q-table .q-field__control {
+  min-height: 28px; /* Altura mínima para el control */
+  height: 28px;     /* Altura específica */
+  line-height: 1; /* Ajustar la altura de línea para evitar desbordes */
+  padding: 0;     /* Sin padding para un diseño más compacto */
+  display: flex;    /* Utilizar flexbox para centrar contenido */
+  align-items: center; /* Centrar verticalmente el contenido */
+}
+
+/* Asegurarse de que los inputs llenen el espacio del envoltorio */
+.q-table .q-input__control,
+.q-table .q-field__control {
+  padding-left: 5px; /* Espacio entre el texto y el icono */
+  width: 100%;              /* Ajustar el ancho al 100% del contenedor */
+  box-sizing: border-box;   /* Incluir padding y bordes en el tamaño total */
+  height: 100%;             /* Asegurar que el envoltorio del input sea de altura completa */
+}
+
+/* Ajustar altura de selects para que coincidan con inputs */
+.q-table .q-select .q-field__control {
+  min-height: 28px; /* Asegurar que la altura mínima sea coherente */
+  height: 28px;     /* Altura específica */
+  display: flex;    /* Utilizar flexbox para centrar contenido */
+  align-items: center; /* Centrar verticalmente el contenido */
+}
+
+/* Centrar texto y flecha del q-select */
+.q-table .q-select .q-field__control .q-input {
+  flex: 1;                 /* Permitir que el input llene el espacio disponible */
+  text-align: center;      /* Centrar el texto horizontalmente */
+  margin: 0;              /* Sin margen para evitar desalineación */
+  height: 100%;           /* Asegurar que el input tenga la altura completa */
+  line-height: 28px;      /* Alinear el texto verticalmente */
+}
+
+/* Asegurar que el icono esté alineado */
+.q-table .q-select .q-field__control .q-icon {
+  margin-left: 5px; /* Espacio entre el texto y el icono */
+  align-self: center; /* Asegurar que el icono esté centrado verticalmente */
+}
+
+/* Para inputs en estado de error o éxito */
+.q-table .q-field--error .q-field__control,
+.q-table .q-field--success .q-field__control {
+  min-height: 24px;       /* Mantener altura mínima en estados de error/éxito */
+  font-size: 11px;        /* Tamaño de fuente reducido */
+  padding: 2px;           /* Ajustar padding */
+}
+
 .custom-notify {
   max-width: 400px; /* Ajusta este valor según lo que necesites */
   word-wrap: break-word; /* Asegura que el texto se ajuste */
@@ -19,4 +95,30 @@
 
 .custom-notify .q-notify__message {
   padding-right: 30px; /* Para dar espacio al icono de cerrar */
+}
+
+/* Estilo para fijar primera y ultima columna en las tablas */
+.my-sticky-last-column-table thead tr:last-child th:last-child,
+.my-sticky-last-column-table th:first-child,
+.my-sticky-last-column-table td:first-child {
+  /* bg color is important for th; just specify one */
+  background-color: white;
+}
+
+.my-sticky-last-column-table td:last-child {
+  background-color: white;
+}
+
+.my-sticky-last-column-table th:first-child,
+.my-sticky-last-column-table td:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+}
+
+.my-sticky-last-column-table th:last-child,
+.my-sticky-last-column-table td:last-child {
+  position: sticky;
+  right: 0;
+  z-index: 1;
 }

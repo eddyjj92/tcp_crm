@@ -42,7 +42,7 @@
         <q-separator inset />
         <q-item to="/">
           <q-item-section avatar class="flex flex-center q-pa-none">
-            <q-icon class="text-center" name="house" />
+            <q-icon class="text-center" name="settings" />
           </q-item-section>
           <q-item-section class="text-bold">
             Configuración
@@ -51,16 +51,16 @@
         <q-separator inset />
         <q-item to="/products">
           <q-item-section avatar class="flex flex-center q-pa-none">
-            <q-icon class="text-center" name="house" />
+            <q-icon class="text-center" name="view_in_ar" />
           </q-item-section>
           <q-item-section class="text-bold">
             Productos
           </q-item-section>
         </q-item>
         <q-separator inset />
-        <q-item to="/">
+        <q-item to="/suppliers">
           <q-item-section avatar class="flex flex-center q-pa-none">
-            <q-icon class="text-center" name="house" />
+            <q-icon class="text-center" name="diversity_3" />
           </q-item-section>
           <q-item-section class="text-bold">
             Proveedores
@@ -69,7 +69,7 @@
         <q-separator inset />
         <q-item to="/">
           <q-item-section avatar class="flex flex-center q-pa-none">
-            <q-icon class="text-center" name="house" />
+            <q-icon class="text-center" name="shopping_cart" />
           </q-item-section>
           <q-item-section class="text-bold">
             Compras
@@ -78,7 +78,7 @@
         <q-separator inset />
         <q-item to="/">
           <q-item-section avatar class="flex flex-center q-pa-none">
-            <q-icon class="text-center" name="house" />
+            <q-icon class="text-center" name="point_of_sale" />
           </q-item-section>
           <q-item-section class="text-bold">
             Ventas
@@ -87,7 +87,7 @@
         <q-separator inset />
         <q-item to="/">
           <q-item-section avatar class="flex flex-center q-pa-none">
-            <q-icon class="text-center" name="house" />
+            <q-icon class="text-center" name="inventory" />
           </q-item-section>
           <q-item-section class="text-bold">
             Inventario

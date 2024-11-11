@@ -73,6 +73,7 @@ func main() {
 	controllers.DB = db
 	productController := controllers.NewProductController()
 	supplierController := controllers.NewSupplierController()
+	purchaseController := controllers.NewPurchaseController()
 
 	// Create an instance of the app structure
 	app := NewApp()
@@ -108,6 +109,9 @@ func main() {
 			productController,
 			&models.Supplier{},
 			supplierController,
+			&models.Purchase{},
+			&models.PurchaseDetail{},
+			purchaseController,
 		},
 		// Windows platform specific options
 		Windows: &windows.Options{

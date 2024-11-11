@@ -4,7 +4,7 @@
       <q-table
         ref="tableRef"
         title="Productos"
-        :rows="products"
+        :rows="suppliers"
         :hide-header="mode === 'grid'"
         :columns="columns"
         row-key="name"
@@ -68,12 +68,12 @@
               :props="props"
               auto-width
             >
-              <q-checkbox :disable="products.length === 0" class="float-left" v-if="col.label === 'ID'" v-model="checkAll"/>
+              <q-checkbox :disable="suppliers.length === 0" class="float-left" v-if="col.label === 'ID'" v-model="checkAll"/>
               <span class="float-left" v-else>{{ col.label }}<br>
                 <q-input debounce="300" outlined dense v-model="filters.name" v-if="col.field === 'name'" type="text"/>
-                <q-input debounce="300" outlined dense v-model="filters.description" v-if="col.field === 'description'" type="text"/>
-                <q-input debounce="300" outlined dense v-model="filters.purchase_price" v-if="col.field === 'purchase_price'" type="text"/>
-                <q-input debounce="300" outlined dense v-model="filters.sale_price" v-if="col.field === 'sale_price'" type="text"/>
+                <q-input debounce="300" outlined dense v-model="filters.address" v-if="col.field === 'address'" type="text"/>
+                <q-input debounce="300" outlined dense v-model="filters.phone" v-if="col.field === 'phone'" type="text"/>
+                <q-input debounce="300" outlined dense v-model="filters.email" v-if="col.field === 'email'" type="text"/>
               </span>
             </q-th>
             <q-th auto-width align="center">Opciones</q-th>
@@ -88,20 +88,19 @@
               auto-width
             >
               <q-checkbox v-model="selected" :val="col.value" class="float-left" v-if="col.label === 'ID'"/>
-              <q-img class="rounded-borders" width="40px" :ratio="1" v-if="col.field === 'image_path'" :src="`http://localhost:3000/${props.cols[1].value}`" />
-              <span v-if="col.field !== 'id' && col.field !== 'image_path' && col.field !== 'active'" class="float-left">{{ col.value }}</span>
+              <span v-if="col.field !== 'id'" class="float-left">{{ col.value }}</span>
             </q-td>
             <q-td auto-width align="center">
               <q-btn @click="edit(props.cols[0].value)" class="q-ml-sm bg-yellow-6 text-white" style="width: 35px">
                 <q-icon size="xs" name="edit" />
                 <q-tooltip anchor="top middle" self="bottom middle" :offset="[10, 10]">
-                  Editar Producto.
+                  Editar Proveedor.
                 </q-tooltip>
               </q-btn>
               <q-btn  @click="deleteDialogOpen(props.cols[0].value)" class="q-ml-sm bg-negative text-white" style="width: 35px">
                 <q-icon size="xs" name="delete_forever" />
                 <q-tooltip anchor="top middle" self="bottom middle" :offset="[10, 10]">
-                  Eliminar Producto.
+                  Eliminar Proveedor.
                 </q-tooltip>
               </q-btn>
             </q-td>
@@ -116,8 +115,8 @@
       <q-card style="width: 700px; max-width: 85vw;">
         <q-card-section>
           <div class="text-h6">
-            <span v-if="selected.length === 0"> Registrar Producto</span>
-            <span v-else> Editar Producto</span>
+            <span v-if="selected.length === 0"> Registrar Proveedor</span>
+            <span v-else> Editar Proveedor</span>
             <q-btn round flat dense icon="close" class="float-right" group="grey-8" v-close-popup></q-btn>
           </div>
         </q-card-section>
@@ -128,50 +127,23 @@
               <q-item>
                 <q-item-section>
                   <q-item-label class="q-pb-xs">Nombre</q-item-label>
-                  <q-input dense outlined v-model="product.name" label="Nombre"/>
+                  <q-input dense outlined v-model="supplier.name" label="Nombre"/>
                 </q-item-section>
               </q-item>
               <q-item>
                 <q-item-section>
-                  <q-item-label class="q-pb-xs">Descripción</q-item-label>
-                  <q-input dense outlined v-model="product.description" label="Descripción"/>
+                  <q-item-label class="q-pb-xs">Dirección</q-item-label>
+                  <q-input dense outlined v-model="supplier.address" label="Dirección"/>
                 </q-item-section>
               </q-item>
               <q-item>
                 <q-item-section>
-                  <q-item-label class="q-pb-xs">Precio de Compras</q-item-label>
-                  <q-input dense outlined v-model="product.purchase_price" label="Precio de Compras"/>
+                  <q-item-label class="q-pb-xs">Teléfono</q-item-label>
+                  <q-input dense outlined v-model="supplier.phone" label="Teléfono"/>
                 </q-item-section>
                 <q-item-section>
-                  <q-item-label class="q-pb-xs">Precio de Venta</q-item-label>
-                  <q-input dense outlined v-model="product.sale_price" label="Precio de Venta"/>
-                </q-item-section>
-              </q-item>
-              <q-item>
-                <q-item-section>
-                  <q-item-label class="q-pb-xs">Imagen</q-item-label>
-                  <q-file
-                    dense
-                    outlined
-                    v-model="uploadImage"
-                    @update:model-value="handleFileAdded"
-                    label="Imagen"
-                  >
-                    <template v-slot:prepend>
-                      <q-icon name="cloud_upload" @click.stop.prevent />
-                    </template>
-                    <template v-slot:append>
-                      <q-btn
-                        :disable="uploadImage === null || uploadImage === undefined"
-                        outlined
-                        unelevated
-                        icon="close"
-                        @click.stop.prevent="uploadImage = null"
-                        class="cursor-pointer"
-                        style="margin-right: -10px; width: 40px"
-                      />
-                    </template>
-                  </q-file>
+                  <q-item-label class="q-pb-xs">Correo Electrónico</q-item-label>
+                  <q-input dense outlined v-model="supplier.email" label="Correo Electrónico"/>
                 </q-item-section>
               </q-item>
             </q-list>
@@ -194,19 +166,19 @@ import {onMounted, reactive, ref, watch} from 'vue'
 import {storeToRefs} from "pinia";
 import DeleteConfirmationDialog from "components/DeleteConfirmationDialog.vue";
 import {useProductStore} from "stores/product-store.js";
+import {useSupplierStore} from "stores/supplier-store.js";
 
 const $q = useQuasar();
-const productStore = useProductStore();
-const {products} = storeToRefs(productStore);
+const supplierStore = useSupplierStore();
+const {suppliers} = storeToRefs(supplierStore);
 let loading = ref(false);
 
 const columns = [
   { name: "id", align: "left", label: "ID",  field: "id", sortable: true },
-  { name: "image_path", align: "left", label: "Imagen",  field: "image_path", sortable: true },
-  { name: "name", align: "left", label: "Producto",  field: "name", sortable: true },
-  { name: "description", align: "left", label: "Descripción",  field: "description", sortable: true },
-  { name: "purchase_price", align: "left", label: "Precio de Compra",  field: "purchase_price", sortable: true, format: (val, row) => `$${val}`, },
-  { name: "sale_price", align: "left", label: "Precio de Venta",  field: "sale_price", sortable: true, format: (val, row) => `$${val}`, },
+  { name: "name", align: "left", label: "Nombre",  field: "name", sortable: true },
+  { name: "address", align: "left", label: "Dirección",  field: "address", sortable: true },
+  { name: "phone", align: "left", label: "Teléfono",  field: "phone", sortable: true },
+  { name: "email", align: "left", label: "Correo",  field: "email", sortable: true, format: (val, row) => val ? val : '-', },
 ];
 
 const tableRef = ref()
@@ -214,12 +186,11 @@ const selected = ref([])
 let filter = ref("")
 let filters = reactive({
   name: "",
-  description: "",
-  purchase_price: "",
-  sale_price: ""
+  address: "",
+  phone: "",
+  email: ""
 });
-let product = ref({})
-let uploadImage = ref(null);
+let supplier = ref({})
 let dialog = ref(false);
 let mode = ref("list")
 let pagination = ref({
@@ -228,8 +199,8 @@ let pagination = ref({
 
 const checkAll = ref(false)
 watch(checkAll, () => {
-  if (checkAll.value && products.value.length !== selected.value.length){
-    products.value.forEach(el => {
+  if (checkAll.value && suppliers.value.length !== selected.value.length){
+    suppliers.value.forEach(el => {
       selected.value.push(el.id)
     })
   }else if (!checkAll.value){
@@ -238,11 +209,11 @@ watch(checkAll, () => {
 })
 
 watch(selected, () => {
-  checkAll.value = products.value.length === selected.value.length && products.value.length > 0;
+  checkAll.value = suppliers.value.length === selected.value.length && suppliers.value.length > 0;
 })
 
 onMounted(async () => {
-  await productStore.getProducts(null)
+  await supplierStore.getSuppliers(null)
 })
 
 function wrapCsvValue(val, formatFn) {
@@ -259,7 +230,7 @@ const exportTable = () => {
   // naive encoding to csv format
   const content = [columns.map(col => wrapCsvValue(col.label))]
     .concat(
-      products.value.map(row =>
+      suppliers.value.map(row =>
         columns
           .map(col =>
             wrapCsvValue(
@@ -274,7 +245,7 @@ const exportTable = () => {
     )
     .join("\r\n");
 
-  const status = exportFile("products.csv", content, "text/csv");
+  const status = exportFile("proveedores.csv", content, "text/csv");
 
   if (status !== true) {
     $q.notify({
@@ -287,37 +258,34 @@ const exportTable = () => {
 
 watch(filters, async () => {
   loading.value = true;
-  const url = `/api/items?name=${filters.name}&description=${filters.description}`
-  await productStore.getProducts(url, false)
+  const url = `/api/suppliers?name=${filters.name}&description=${filters.description}`
+  await supplierStore.getSuppliers(url, false)
     .finally(() => loading.value = false);
 })
 
 const register = async () => {
-  const registered = await productStore.postProduct(product.value)
+  const registered = await supplierStore.postSupplier(supplier.value)
   if (registered){
     dialog.value = false;
-    product.value = {};
+    supplier.value = {};
   }
 }
 
 const edit = (id) => {
-  const edit = products.value.find(u => u.id === id);
-  product.value.name = edit.name;
-  product.value.description = edit.description;
-  product.value.purchase_price = edit.purchase_price;
-  product.value.sale_price = edit.sale_price;
+  const edit = suppliers.value.find(u => u.id === id);
+  supplier.value.name = edit.name;
+  supplier.value.address = edit.address;
+  supplier.value.phone = edit.phone;
+  supplier.value.email = edit.email;
   selected.value = [id];
   dialog.value = true;
 }
 
 const update = async () => {
-  const updated = await productStore.putProduct(selected.value[0], product.value)
+  const updated = await supplierStore.putSupplier(selected.value[0], supplier.value)
   if (updated){
     dialog.value = false;
-    loading.value = true;
     selected.value = [];
-    await productStore.getProducts(null, false)
-      .finally(() => loading.value = false);
   }
 }
 
@@ -331,29 +299,10 @@ const deleteDialogClose = () => {
 }
 
 const remove = async () => {
-  const deleted = await productStore.deleteProduct(deleteDialog.value)
+  const deleted = await supplierStore.deleteSupplier(deleteDialog.value)
   if (deleted){
     deleteDialog.value = null;
-    loading.value = true;
-    await productStore.getProducts(null, false)
-      .finally(() => loading.value = false);
   }
-}
-
-const handleFileAdded = async (file) => {
-  if (file) {
-    product.value.image_path = await toBase64(file);
-    alert(product.value.image_path)
-  }
-};
-
-function toBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = reject;
-    reader.readAsDataURL(file); // Convertir el archivo a base64
-  });
 }
 
 </script>

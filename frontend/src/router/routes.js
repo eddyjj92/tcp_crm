@@ -6,7 +6,6 @@ const routes = [
       { path: '', component: () => import('pages/IndexPage.vue') }
     ]
   },
-
   {
     path: '/products',
     component: () => import('layouts/MainLayout.vue'),
@@ -14,6 +13,14 @@ const routes = [
       { path: '', component: () => import('pages/products/index.vue') }
     ]
   },
+  {
+    path: '/suppliers',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
+      { path: '', component: () => import('pages/suppliers/index.vue') }
+    ]
+  },
+
 
   // Always leave this as last one,
   // but you can also remove it

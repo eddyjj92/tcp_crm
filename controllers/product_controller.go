@@ -70,10 +70,10 @@ func (c *ProductController) Update(id int, product models.Product) (*models.Prod
 
 func (c *ProductController) Delete(id int) (*models.Product, error) {
 	// Buscar el producto existente para obtener los datos actuales
-	existingProduct := &models.Product{}
-	if err := DB.First(existingProduct, id).Error; err != nil {
+	remove := &models.Product{}
+	if err := DB.First(remove, id).Error; err != nil {
 		return nil, fmt.Errorf("producto no encontrado: %w", err)
 	}
-	DB.Delete(existingProduct)
-	return existingProduct, nil
+	DB.Delete(remove)
+	return remove, nil
 }

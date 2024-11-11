@@ -1,8 +1,10 @@
 import { defineStore } from 'pinia';
 import {ref} from "vue";
-import {api} from "boot/axios";
-import {Loading, Notify} from "quasar";
+import {Loading} from "quasar";
 import {Delete, List, Store, Update} from "app/wailsjs/go/controllers/ProductController.js";
+import {helpers} from "src/helpers/index.js";
+
+const {message} = helpers();
 
 export const useProductStore = defineStore('product', () => {
   let products = ref([]);
@@ -18,10 +20,7 @@ export const useProductStore = defineStore('product', () => {
       localStorage.setItem('products', JSON.stringify(products.value))
       return true;
     }).catch(error => {
-      Notify.create({
-        message: error,
-        type: "negative"
-      });
+      message(error, "negative")
       return false
     }).finally(() => hideLoading ? Loading.hide() : null)
   }
@@ -31,26 +30,10 @@ export const useProductStore = defineStore('product', () => {
     return await Store(product).then(response => {
       products.value = [...products.value, response];
       localStorage.setItem('products', JSON.stringify(products.value))
+      message(`Producto ${response.name} registrado con éxito`, "positive")
       return true;
     }).catch(error => {
-      const close = Notify.create({
-        message: error,
-        type: "negative",
-        position: "top-right",
-        html: true,
-        classes: "custom-notify",
-        timeout: 5000, // Tiempo en milisegundos, 5000ms = 5 segundos
-        actions: [
-          {
-            icon: "close", // Icono de cerrar
-            color: "white", // Color del icono
-            handler: () => {
-              close()
-            }
-          }
-        ],
-        progress: true, // Barra de progreso visible
-      });
+      message(error, "negative")
       return false
     }).finally(() => Loading.hide())
   }
@@ -60,26 +43,10 @@ export const useProductStore = defineStore('product', () => {
     return await Update(id, product).then(response => {
       products.value = [...products.value.filter(el => el.id !== id), response];
       localStorage.setItem('products', JSON.stringify(products.value))
+      message(`Producto ${response.name} actualizado con éxito`, "positive")
       return true;
     }).catch(error => {
-      const close = Notify.create({
-        message: error,
-        type: "negative",
-        position: "top-right",
-        html: true,
-        classes: "custom-notify",
-        timeout: 5000, // Tiempo en milisegundos, 5000ms = 5 segundos
-        actions: [
-          {
-            icon: "close", // Icono de cerrar
-            color: "white", // Color del icono
-            handler: () => {
-              close()
-            }
-          }
-        ],
-        progress: true, // Barra de progreso visible
-      });
+      message(error, "negative")
       return false
     }).finally(() => Loading.hide())
   }
@@ -89,44 +56,10 @@ export const useProductStore = defineStore('product', () => {
     return await Delete(id).then(response => {
       products.value = products.value.filter(el => el.id !== id);
       localStorage.setItem('products', JSON.stringify(products.value))
-      const close = Notify.create({
-        message: "Producto eliminado con éxito",
-        type: "positive",
-        position: "top-right",
-        html: true,
-        classes: "custom-notify",
-        timeout: 3000, // Tiempo en milisegundos, 5000ms = 5 segundos
-        actions: [
-          {
-            icon: "close", // Icono de cerrar
-            color: "white", // Color del icono
-            handler: () => {
-              close()
-            }
-          }
-        ],
-        progress: true, // Barra de progreso visible
-      });
+      message(`Producto ${response.name} eliminado con éxito`, "positive")
       return true;
     }).catch(error => {
-      const close = Notify.create({
-        message: error,
-        type: "negative",
-        position: "top-right",
-        html: true,
-        classes: "custom-notify",
-        timeout: 5000, // Tiempo en milisegundos, 5000ms = 5 segundos
-        actions: [
-          {
-            icon: "close", // Icono de cerrar
-            color: "white", // Color del icono
-            handler: () => {
-              close()
-            }
-          }
-        ],
-        progress: true, // Barra de progreso visible
-      });
+      message(error, "negative")
       return false
     }).finally(() => Loading.hide())
   }
