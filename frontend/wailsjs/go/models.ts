@@ -49,11 +49,13 @@ export namespace models {
 	export class PurchaseDetail {
 	    id: number;
 	    product?: Product;
-	    product_id: string;
+	    product_id: number;
 	    purchase_price: number;
 	    sale_price: number;
 	    units: number;
 	    subtotal: number;
+	    purchase?: Purchase;
+	    purchase_id: number;
 	    // Go type: time
 	    created_at: any;
 	    // Go type: time
@@ -72,6 +74,8 @@ export namespace models {
 	        this.sale_price = source["sale_price"];
 	        this.units = source["units"];
 	        this.subtotal = source["subtotal"];
+	        this.purchase = this.convertValues(source["purchase"], Purchase);
+	        this.purchase_id = source["purchase_id"];
 	        this.created_at = this.convertValues(source["created_at"], null);
 	        this.updated_at = this.convertValues(source["updated_at"], null);
 	    }

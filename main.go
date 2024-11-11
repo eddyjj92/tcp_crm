@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"tcp_crm/controllers"
 	"tcp_crm/models"
+	"time"
 
 	"github.com/wailsapp/wails/v2/pkg/logger"
 	"github.com/wailsapp/wails/v2/pkg/options"
@@ -52,11 +53,14 @@ func main() {
 	}
 
 	// Migrate the schema
-	db.AutoMigrate(&models.Product{}, &models.Supplier{})
+	db.AutoMigrate(&models.Product{}, &models.Supplier{}, &models.Purchase{}, &models.PurchaseDetail{})
 	db.Exec("DELETE FROM products")
 	db.Exec("DELETE FROM suppliers")
+	db.Exec("DELETE FROM purchases")
+	db.Exec("DELETE FROM purchase_details")
 	// Create
 	db.Create(&models.Product{
+		ID:            1,
 		Name:          "Zapatos",
 		Description:   "Zapatos negros",
 		PurchasePrice: "0",
@@ -64,10 +68,18 @@ func main() {
 		ImagePath:     "products/product.png",
 	})
 	db.Create(&models.Supplier{
+		ID:      1,
 		Name:    "Periquito Perez",
 		Address: "Cienfuegos",
 		Phone:   "5030258",
 		Email:   "periquito@gmail.com",
+	})
+	db.Create(&models.Purchase{
+		ID:         1,
+		Date:       time.Time{},
+		SupplierID: 1,
+		TotalUnits: 5,
+		TotalPrice: 100,
 	})
 
 	controllers.DB = db
@@ -110,7 +122,6 @@ func main() {
 			&models.Supplier{},
 			supplierController,
 			&models.Purchase{},
-			&models.PurchaseDetail{},
 			purchaseController,
 		},
 		// Windows platform specific options

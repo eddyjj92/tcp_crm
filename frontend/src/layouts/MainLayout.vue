@@ -10,12 +10,20 @@
           aria-label="Menu"
           @click="toggleLeftDrawer"
         />
-
+        <q-btn
+          v-if="canGoBackRef"
+          flat
+          dense
+          round
+          icon="arrow_back"
+          aria-label="Menu"
+          @click="router.back()"
+        />
         <q-toolbar-title>
           TCP-CRM
         </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+
       </q-toolbar>
     </q-header>
 
@@ -67,7 +75,7 @@
           </q-item-section>
         </q-item>
         <q-separator inset />
-        <q-item to="/">
+        <q-item to="/purchases">
           <q-item-section avatar class="flex flex-center q-pa-none">
             <q-icon class="text-center" name="shopping_cart" />
           </q-item-section>
@@ -113,7 +121,8 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import {onUpdated, ref} from 'vue'
+import {useRouter} from "vue-router";
 
 defineOptions({
   name: 'MainLayout'
@@ -124,4 +133,15 @@ const leftDrawerOpen = ref(false)
 function toggleLeftDrawer () {
   leftDrawerOpen.value = !leftDrawerOpen.value
 }
+
+const router = useRouter();
+let canGoBackRef = ref(false)
+const canGoBack = () => {
+  const previousRoute = router.options.history.state.back;
+  canGoBackRef.value = !!previousRoute;
+};
+
+onUpdated(() => {
+  canGoBack()
+})
 </script>

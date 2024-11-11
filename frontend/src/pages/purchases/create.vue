@@ -115,7 +115,7 @@
                   :ref="setInputRef('detailInProcess.color_id')"
                   outlined
                   v-model="detailInProcess.color_id"
-                  :options="items.find(i => i.id === detailInProcess.item_id)?.colors "
+                  :options="products.find(i => i.id === detailInProcess.item_id)?.colors "
                   option-label="name"
                   option-value="id"
                   emit-value
@@ -251,23 +251,17 @@
 import {useQuasar} from "quasar";
 import {computed, onMounted, reactive, ref, watch} from 'vue'
 import {storeToRefs} from "pinia";
-import {useAuthStore} from "stores/auth-store";
 import {usePurchaseStore} from "stores/purchase-store.js";
-import {useIvaStore} from "stores/iva-store.js";
-import {useItemStore} from "stores/product-store.js";
+import {useProductStore} from "stores/product-store.js";
 import {useRouter} from "vue-router";
 import Swal from "sweetalert2";
 
 const $router = useRouter();
 const $q = useQuasar();
-const authStore = useAuthStore();
-const {token, user} = storeToRefs(authStore);
 const purchaseStore = usePurchaseStore();
-const {purchases, suppliers, payment_shapes, purchase_states} = storeToRefs(purchaseStore);
-const ivaStore = useIvaStore();
-const {ivas} = storeToRefs(ivaStore);
-const itemStore = useItemStore()
-const {items} = storeToRefs(itemStore)
+const {purchases,} = storeToRefs(purchaseStore);
+const productStore = useProductStore()
+const {products} = storeToRefs(productStore)
 
 const refs = ref([]);
 const setInputRef = (index) => (el) => {
@@ -284,7 +278,7 @@ const focusNext = (index) => {
   }, 100);
 };
 
-let products = ref(items.value);
+let filteredProducts = ref(products.value);
 let purchase = ref({
   details: []
 })
@@ -292,9 +286,8 @@ let purchase = ref({
 let detailInProcess = reactive({
   item_id: null,
   color_id: null,
-  iva_percent: computed(() => items.value.find(i => i.id === detailInProcess.item_id)?.iva.percent),
-  purchase_price: computed(() => items.value.find(i => i.id === detailInProcess.item_id)?.last_purchase_price),
-  sale_price: computed(() => items.value.find(i => i.id === detailInProcess.item_id)?.last_sale_price),
+  purchase_price: computed(() => products.value.find(i => i.id === detailInProcess.item_id)?.purchase_price),
+  sale_price: computed(() => products.value.find(i => i.id === detailInProcess.item_id)?.sale_price),
   final_purchase_price: 0,
   discount_percent: 0,
   size_id: null,
@@ -305,10 +298,6 @@ watch(detailInProcess, () => {
   if (detailInProcess.item_id){
     detailInProcess.final_purchase_price = detailInProcess.purchase_price - detailInProcess.purchase_price * detailInProcess.discount_percent/100
   }
-})
-
-onMounted(async () => {
-  await itemStore.getItems(token.value, null,!itemStore.fetched)
 })
 
 const addDetail = () => {
@@ -327,7 +316,6 @@ const removeDetail = () => {
   purchase.value.details.pop();
 }
 
-
 const register = async () => {
   const response = await purchaseStore.postPurchase(token.value, purchase.value)
   if(await response){
@@ -338,7 +326,7 @@ const register = async () => {
 const productFilter  = (val, update) => {
   if (val === '') {
     update(() => {
-      products.value = items.value
+      filteredProducts.value = products.value
 
       // here you have access to "ref" which
       // is the Vue reference of the QSelect
@@ -348,13 +336,13 @@ const productFilter  = (val, update) => {
 
   update(() => {
     const needle = val.toLowerCase()
-    products.value = items.value.filter(v => v.name.toLowerCase().indexOf(needle) > -1 || v.description.toLowerCase().indexOf(needle) > -1)
+    filteredProducts.value = products.value.filter(v => v.name.toLowerCase().indexOf(needle) > -1 || v.description.toLowerCase().indexOf(needle) > -1)
   })
 }
 
 const openSizesDialog = async () => {
   let message = null;
-  if (!purchase.value.entity_id){
+  if (!purchase.value.supplier_id){
     message = 'El campo proveedor es requerido';
   }
   if (message){

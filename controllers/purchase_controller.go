@@ -11,10 +11,15 @@ func NewPurchaseController() *PurchaseController {
 	return &PurchaseController{}
 }
 
-func (c *PurchaseController) List() []models.Purchase {
+func (c *PurchaseController) List() ([]models.Purchase, error) {
 	var purchases []models.Purchase
-	DB.Find(&purchases)
-	return purchases
+	// Preload de relaciones necesarias, puedes agregar más según tus modelos
+	result := DB.Preload("Supplier").Preload("Details").Find(&purchases)
+	// Manejo de errores
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return purchases, nil
 }
 
 func (c *PurchaseController) Store(purchase models.Purchase) (*models.Purchase, error) {
